@@ -1,0 +1,70 @@
+<html>
+<body>
+    <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+    <canvas width="640" height="480" id="canvas"></canvas>
+    <script>
+    const illo = new Zdog.Illustration({
+        element: "#canvas",
+        dragRotate: false
+    });
+
+    let rect = new Zdog.RoundedRect({
+        addTo: illo,
+        width: 100,
+        height: 150,
+        cornerRadius: 30,
+        stroke: 48,
+        translate: {x: -100, y: 60},
+        color: 'green'
+    });
+
+    let triangle = new Zdog.Shape({
+      addTo: illo,
+      path: [
+        { x:   0, y: -50 },
+        { x:  50, y:  50 },
+        { x: -50, y:  50 },
+      ],
+      translate: {x: 100, y: 60},
+      color: '#E62',
+      stroke: 10,
+    });
+
+    let pentagon = new Zdog.Polygon({
+      addTo: illo,
+      radius: 60,
+      sides: 5,
+      stroke: 20,
+      translate: {x:0, y:-130},
+      color: '#EA0',
+    });
+
+    let x = 1;
+    let rotateZ = 0.05;
+
+    function step() {
+      //四角形を回転//
+      rect.rotate.x += 0.1;
+      rect.rotate.y += 0.1;
+      rect.rotate.z += 0.1;
+      //三角形を回転//
+      triangle.rotate.x -= 0.01;
+      triangle.rotate.z -= 0.01;
+      //五角形を回転・移動//
+      pentagon.rotate.z += rotateZ;
+      let pentagonRSide = pentagon.translate.x + pentagon.radius + pentagon.stroke/2; //五角形の最右端
+      let pentagonLSide = pentagon.translate.x - pentagon.radius - pentagon.stroke/2; //五角形の最左端
+      if (pentagonLSide <= -illo.width/2 || pentagonRSide >= illo.width/2) {
+        x *= -1;
+        rotateZ *= -1;
+      }
+      pentagon.translate.x += x;
+
+      illo.updateRenderGraph();
+      requestAnimationFrame(step);
+    }
+
+    step();
+    </script>
+</body>
+</html>
